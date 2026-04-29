@@ -368,39 +368,46 @@ export function initOverlayUI(sceneController) {
   }
 
   function unlockAudio() {
+    console.log('[p5] Unlocking audio...')
     if (audioUnlocked) return
     audioUnlocked = true
 
-    // WE MUST START AUDIO IMMEDIATELY WITHIN THE CLICK EVENT
-    // ON MOBILE, IF WE WAIT FOR ASYNC LOADS, THE BROWSER BLOCKS IT
-    if (!playerCreated) {
-      createPlayer()
-    }
-    
-    // Prime the player immediately
-    if (player && typeof player.playVideo === 'function') {
-      try {
-        player.unMute()
-        player.setVolume(0)
-        player.playVideo()
-      } catch (e) {
-        console.warn('[p5] Immediate mobile play attempt:', e)
-      }
-    }
-
+    // IMMEDIATELY hide the overlay so the user isn't stuck
     if (audioUnlockOverlay) {
       audioUnlockOverlay.classList.add('hidden')
       audioUnlockOverlay.style.display = 'none'
+      audioUnlockOverlay.setAttribute('aria-hidden', 'true')
     }
-    if (trackLabel) {
-      trackLabel.textContent = 'Audio ready — use ▶ for BGM'
-    }
-    
-    // If it's still not ready, we use the pendingStart flag for later
-    if (!musicReady) {
-      pendingStart = true
-    } else {
-      playMusicWithFade()
+
+    try {
+      // WE MUST START AUDIO IMMEDIATELY WITHIN THE CLICK EVENT
+      if (!playerCreated) {
+        createPlayer()
+      }
+      
+      // Prime the player immediately
+      if (player && typeof player.playVideo === 'function') {
+        try {
+          player.unMute()
+          player.setVolume(0)
+          player.playVideo()
+        } catch (e) {
+          console.warn('[p5] Immediate play attempt failed:', e)
+        }
+      }
+
+      if (trackLabel) {
+        trackLabel.textContent = 'Audio ready — use ▶ for BGM'
+      }
+      
+      // If it's still not ready, we use the pendingStart flag for later
+      if (!musicReady) {
+        pendingStart = true
+      } else {
+        playMusicWithFade()
+      }
+    } catch (err) {
+      console.error('[p5] unlockAudio error (dismissed overlay anyway):', err)
     }
   }
 

@@ -55,7 +55,18 @@ export default function App() {
     }
     // Must always run: click handlers, BGM, cards — if WebGL failed, use a no-op scene.
     initOverlayUI(sc ?? noopSceneController)
+
+    // SAFETY: Force-dismiss the loader after a short delay if it's still there
+    const loaderTimer = setTimeout(() => {
+      const loader = document.getElementById('p5-loader')
+      if (loader) {
+        loader.classList.add('hidden')
+        loader.style.display = 'none'
+      }
+    }, 2000)
+
     return () => {
+      clearTimeout(loaderTimer)
       if (sc) {
         sc.dispose()
       }
