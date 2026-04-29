@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Samuel Ogunnubi | Persona 5 Resume</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="p5-loader">
+    <div class="loader-mask-wrap">
+      <div class="mask-half left"></div>
+      <div class="mask-half right"></div>
+      <div class="mask-core"></div>
+    </div>
+    <div class="loader-slash" aria-hidden="true"></div>
+    <p class="loader-text">Persona Shift Loading...</p>
+  </div>
+  <div id="keyhole-transition" aria-hidden="true">
+    <svg viewBox="0 0 100 120" class="keyhole-svg">
+      <path fill="#FFF" d="M 32 30 A 20 20 0 0 1 50 8 A 20 20 0 0 1 68 30 L 80 100 L 20 100 L 32 30 Z" />
+    </svg>
+  </div>
+  <div id="awakening-strike" aria-hidden="true">
+    <div class="keyblade-slash">✦╪✦</div>
+    <div class="fracture-line"></div>
+  </div>
+  <canvas id="bg-canvas"></canvas>
+  <div class="scanlines"></div>
+  <div class="noise"></div>
+  <div id="custom-cursor"></div>
+  <div id="audio-unlock-overlay" role="dialog" aria-label="Enable audio" aria-modal="true">
+    <button type="button" id="audio-unlock-btn">Click Anywhere to Initialize Audio</button>
+  </div>
+  <!-- Audio unlock logic handled by overlayUI.js module -->
+  <audio id="bgm-audio" src="/beneath-the-mask-instrumental.mp3" preload="auto" loop></audio>
+  <div class="p5-yt-bgm" aria-hidden="true">
+    <div id="player"></div>
+  </div>
+
+  <div id="root"></div>
+
+  <!-- Loader must never depend on React/GSAP: if the bundle throws, this still dismisses it. -->
+  <script>
+    (function () {
+      function dismissP5Loader() {
+        var el = document.getElementById('p5-loader');
+        if (!el) return;
+        el.classList.add('hidden');
+        el.setAttribute('aria-hidden', 'true');
+        el.style.cssText =
+          'display:none!important;visibility:hidden!important;pointer-events:none!important;opacity:0;z-index:-1;';
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', dismissP5Loader);
+      } else {
+        dismissP5Loader();
+      }
+      setTimeout(dismissP5Loader, 1200);
+    })();
+  </script>
+  <script type="module" src="/src/main.jsx"></script>
+  <script src="https://www.youtube.com/iframe_api"></script>
+</body>
+</html>
